@@ -30,7 +30,14 @@
     </style>
 </head>
 <body>
-
+<div id="start-screen" style="position: absolute; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000;">
+    <h1 style="color: #00d4ff; font-size: 50px; text-shadow: 0 0 20px #00d4ff;">Space Shooter</h1>
+    <p style="color: white; font-size: 20px;">تحدي الزعماء - نسخة المطور محمود</p>
+    <div style="display: flex; gap: 20px; align-items: center; margin-top: 30px;">
+        <button id="start-btn" style="padding: 15px 50px; font-size: 25px; cursor: pointer; background: #00ff00; color: black; border: none; border-radius: 10px; font-weight: bold;">START</button>
+        <button id="change-color-btn" style="padding: 10px; font-size: 30px; cursor: pointer; background: #555; border: none; border-radius: 50%;">🚀</button>
+    </div>
+</div>
     <div id="ui">السكور: <span id="score">0</span> <br> <span id="level-text">المستوى: 1</span></div>
     <div id="warning">⚠️ الزعيم قادم! ⚠️</div>
     <div id="boss-ui">
@@ -40,6 +47,27 @@
     <canvas id="gameCanvas"></canvas>
 
 <script>
+    // === جلب العناصر من الـ HTML ===
+const startScreen = document.getElementById('start-screen');
+const startButton = document.getElementById('start-btn');
+const changeColorButton = document.getElementById('change-color-btn');
+
+// === في بداية الكود: تأكد إن اللعبة واقفة ===
+// (افترضت إن عندك دالة اسمها gameLoop أو update هي اللي بتشغل اللعبة)
+// if (typeof isGameRunning !== 'undefined') { isGameRunning = false; }
+
+startButton.addEventListener('click', () => {
+startScreen.style.display = 'none';
+gameActive = true;
+update();
+console.log("Game Started!");
+});
+// === فعل زرار تغيير اللون (Change Color) ===
+changeColorButton.addEventListener('click', () => {
+currentColorIndex = (currentColorIndex + 1) % playerColors.length;
+changeColorButton.style.backgroundColor = playerColors[currentColorIndex];
+console.log("اللون اتغير والزرار نور!");
+});
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const scoreElement = document.getElementById('score');
@@ -53,10 +81,11 @@
 
     let score = 0;
     let nextBossScore = 200;
-    let gameActive = true;
+    let gameActive = false;
     let isWarning = false;
     let shootingInterval;
-    
+    let playerColors = ['#00d4ff', '#12ff00', '#ff00ff', '#ff8800', '#ffffff'];
+let currentColorIndex = 0;
     let gameLevel = 1;
     let enemyBaseSpeed = 4;
     let bossMaxHp = 100;
@@ -187,7 +216,7 @@
 
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#00d4ff';
+        ctx.fillStyle = playerColors[currentColorIndex];
         ctx.beginPath();
         ctx.moveTo(player.x, player.y);
         ctx.lineTo(player.x - 20, player.y + 30);
@@ -229,7 +258,6 @@
     });
     window.addEventListener('mouseup', () => { clearInterval(shootingInterval); });
 
-    update();
 </script>
 </body>
 </html>
